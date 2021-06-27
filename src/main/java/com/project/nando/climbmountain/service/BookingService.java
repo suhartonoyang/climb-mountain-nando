@@ -1,6 +1,7 @@
 package com.project.nando.climbmountain.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -8,6 +9,7 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.stereotype.Service;
 
 import com.project.nando.climbmountain.model.BookingDtl;
@@ -31,7 +33,7 @@ public class BookingService {
 	private ClimberService climberService;
 
 	@Autowired
-	private ClimberDiseaseService climberDiseaseService;
+	private ClimbingScheduleService climbingScheduleService;
 
 	public List<BookingHdr> getBookingAll() {
 		return StreamSupport.stream(bookingRepository.findAll().spliterator(), false).collect(Collectors.toList());
@@ -42,27 +44,23 @@ public class BookingService {
 	}
 
 	public BookingHdr saveBooking(BookingHdr booking) {
-		BookingHdr newBooking = bookingRepository.save(booking);
-		newBooking.setBookingNumber(generateBookingNumber(newBooking));
-		bookingRepository.save(newBooking);
-
-		booking.getBookingDtls().stream().forEach(p -> {
-			Climber climber = climberService.saveClimber(p.getClimber());
-			p.setClimber(climber);
-			p.getClimber().getClimberDiseases().stream().forEach(q -> {
-				q.setClimber(climber);
-				q = climberDiseaseService.saveClimberDisease(q);
-			});
-			p.setBookingHdr(newBooking);
-			BookingDtl dtl = bookingDtlRepository.save(p);
-			p.setId(dtl.getId());
-		});
+		booking.setClimbingSchedule(
+				climbingScheduleService.getClimbingScheduleById(booking.getClimbingSchedule().getId()));
+		bookingRepository.save(booking);
+		booking.setBookingNumber(generateBookingNumber(booking));
+		booking.getBookingDtls().stream().forEach(p->{
+			climberService.saveClimber(p.getClimber());
+			p.setBookingHdr(booking);
+			bookingDtlRepository.save(p);
+		});;
 		return booking;
 	}
 
 	private String generateBookingNumber(BookingHdr booking) {
-		DateFormatter df = new DateFormatter("yyyymmdd");
-		String bookingNumber = "CMT" + "-" + df + "-" + StringUtils.leftPad(String.valueOf(booking.getId()), 5, "0");
+		String formattedDate = booking.getClimbingSchedule().getDate().toString().replaceAll("-", "");
+		String bookingNumber = "CMT" + "-" + formattedDate + "-"
+				+ StringUtils.leftPad(String.valueOf(booking.getId()), 5, "0");
+		System.out.println("bookingNumber: " + bookingNumber);
 		return bookingNumber;
 	}
 }

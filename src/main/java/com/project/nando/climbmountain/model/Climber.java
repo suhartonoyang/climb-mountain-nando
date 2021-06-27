@@ -63,7 +63,7 @@ public class Climber implements Serializable {
 	private boolean isLeader;
 	@OneToMany(mappedBy = "climber")
 	@JsonIgnoreProperties(value = "climber")
-	private Set<BookingDtl> bookingDtls;
+	private List<BookingDtl> bookingDtls;
 	@OneToMany(mappedBy = "climber")
 	@JsonIgnoreProperties(value = "climber")
 	private List<ClimberDisease> climberDiseases;
@@ -201,11 +201,11 @@ public class Climber implements Serializable {
 		this.numberOfClimbs = numberOfClimbs;
 	}
 
-	public Set<BookingDtl> getBookingDtls() {
+	public List<BookingDtl> getBookingDtls() {
 		return bookingDtls;
 	}
 
-	public void setBookingDtls(Set<BookingDtl> bookingDtls) {
+	public void setBookingDtls(List<BookingDtl> bookingDtls) {
 		this.bookingDtls = bookingDtls;
 	}
 

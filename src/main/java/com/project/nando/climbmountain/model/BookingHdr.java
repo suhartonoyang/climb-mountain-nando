@@ -4,10 +4,7 @@ package com.project.nando.climbmountain.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -27,13 +23,13 @@ public class BookingHdr implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false, precision = 10)
 	private int id;
-	@Column(name = "booking_number", nullable = false, length = 255)
+	@Column(name = "booking_number", length = 255)
 	private String bookingNumber;
 	@Column(name = "date_return", nullable = false)
 	private LocalDate dateReturn;
 	@OneToMany(mappedBy = "bookingHdr")
 	@JsonIgnoreProperties(value = "bookingHdr")
-	private Set<BookingDtl> bookingDtls;
+	private List<BookingDtl> bookingDtls;
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "climbing_schedule_id", nullable = false)
 	@JsonIgnoreProperties(value = "bookingHdrs")
@@ -93,7 +89,7 @@ public class BookingHdr implements Serializable {
 	 *
 	 * @return the current value of bookingDtl
 	 */
-	public Set<BookingDtl> getBookingDtls() {
+	public List<BookingDtl> getBookingDtls() {
 		return bookingDtls;
 	}
 
@@ -102,7 +98,7 @@ public class BookingHdr implements Serializable {
 	 *
 	 * @param aBookingDtl the new value for bookingDtl
 	 */
-	public void setBookingDtls(Set<BookingDtl> aBookingDtls) {
+	public void setBookingDtls(List<BookingDtl> aBookingDtls) {
 		bookingDtls = aBookingDtls;
 	}
 

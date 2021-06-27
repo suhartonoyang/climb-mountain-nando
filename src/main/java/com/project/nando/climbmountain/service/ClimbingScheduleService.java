@@ -20,6 +20,10 @@ public class ClimbingScheduleService {
 		return StreamSupport.stream(climbingScheduleRepository.findAll().spliterator(), false)
 				.collect(Collectors.toList());
 	}
+	
+	public ClimbingSchedule getClimbingScheduleById(int id) {
+		return climbingScheduleRepository.findById(id).orElse(null);
+	}
 
 	@SuppressWarnings("deprecation")
 	public List<ClimbingSchedule> getClimbingScheduleByMonthAndYear(int month, int year) {
