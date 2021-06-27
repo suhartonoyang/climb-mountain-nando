@@ -75,10 +75,6 @@ public class BookingController {
 					+ "In climberDiseases, please clear id attribute" ) @RequestBody BookingHdr booking) {
 
 		BookingHdr newBooking = bookingService.saveBooking(booking);
-		if (newBooking.getId()!=0) {
-			System.out.println("berhasil save booking");
-		}
-		
 		Response resp = new Response();
 		resp.setCode(String.valueOf(HttpStatus.CREATED.value()));
 		resp.setMessage("Sucessfully Booking!");
