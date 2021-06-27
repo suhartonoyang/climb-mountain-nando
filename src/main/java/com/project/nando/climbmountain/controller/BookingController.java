@@ -3,6 +3,8 @@ package com.project.nando.climbmountain.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,9 @@ import com.project.nando.climbmountain.model.ClimbingSchedule;
 import com.project.nando.climbmountain.service.BookingService;
 import com.project.nando.climbmountain.service.ClimberService;
 import com.project.nando.climbmountain.service.ClimbingScheduleService;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping("/api/booking")
@@ -59,8 +64,15 @@ public class BookingController {
 		}
 	}
 
+	@Transactional
 	@PostMapping("/")
-	public ResponseEntity<Response> saveBooking(@RequestBody BookingHdr booking) {
+	@ApiOperation(value = "create one record of booking")
+	public ResponseEntity<Response> saveBooking(
+			@ApiParam(value = "In bookingHdr, please clear attributes of id and bookingNumber. "
+					+ "In climbingSchedule, please just fill id attribute. "
+					+ "In bookingDtls, please clear id attribute. "
+					+ "In climber, please clear id attribute and bookingDtls. "
+					+ "In climberDiseases, please clear id attribute" ) @RequestBody BookingHdr booking) {
 		BookingHdr newBooking = bookingService.saveBooking(booking);
 		Response resp = new Response();
 		resp.setCode(String.valueOf(HttpStatus.CREATED.value()));
