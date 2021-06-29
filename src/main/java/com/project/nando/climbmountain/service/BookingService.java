@@ -2,6 +2,7 @@ package com.project.nando.climbmountain.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -48,11 +49,13 @@ public class BookingService {
 				climbingScheduleService.getClimbingScheduleById(booking.getClimbingSchedule().getId()));
 		bookingRepository.save(booking);
 		booking.setBookingNumber(generateBookingNumber(booking));
-		booking.getBookingDtls().stream().forEach(p->{
+		booking.setInvoiceNumber(generateInvoiceNumber(booking));
+		booking.getBookingDtls().stream().forEach(p -> {
 			climberService.saveClimber(p.getClimber());
 			p.setBookingHdr(booking);
 			bookingDtlRepository.save(p);
-		});;
+		});
+		;
 		return booking;
 	}
 
@@ -60,7 +63,14 @@ public class BookingService {
 		String formattedDate = booking.getClimbingSchedule().getDate().toString().replaceAll("-", "");
 		String bookingNumber = "CMT" + "-" + formattedDate + "-"
 				+ StringUtils.leftPad(String.valueOf(booking.getId()), 5, "0");
-		System.out.println("bookingNumber: " + bookingNumber);
 		return bookingNumber;
+	}
+
+	private String generateInvoiceNumber(BookingHdr booking) {
+		LocalDate ld = LocalDate.now();
+		String formattedDate = ld.toString().replaceAll("-", "");
+		String invoiceNumber = "INV" + "-" + formattedDate + "-"
+				+ StringUtils.leftPad(String.valueOf(booking.getId()), 5, "0");
+		return invoiceNumber;
 	}
 }

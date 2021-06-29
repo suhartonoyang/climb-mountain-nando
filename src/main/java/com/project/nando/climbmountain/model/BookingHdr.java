@@ -25,6 +25,10 @@ public class BookingHdr implements Serializable {
 	private int id;
 	@Column(name = "booking_number", length = 255)
 	private String bookingNumber;
+	@Column(name = "invoice_number", length = 255)
+	private String invoiceNumber;
+	@Column(name = "total_price")
+	private long totalPrice;
 	@Column(name = "date_return", nullable = false)
 	private LocalDate dateReturn;
 	@OneToMany(mappedBy = "bookingHdr")
@@ -64,6 +68,22 @@ public class BookingHdr implements Serializable {
 
 	public void setBookingNumber(String bookingNumber) {
 		this.bookingNumber = bookingNumber;
+	}
+
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+
+	public long getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(long totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 	/**
@@ -170,7 +190,8 @@ public class BookingHdr implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BookingHdr [id=" + id + ", dateReturn=" + dateReturn + ", bookingDtl=" + bookingDtls
+		return "BookingHdr [id=" + id + ", bookingNumber=" + bookingNumber + ", invoiceNumber=" + invoiceNumber
+				+ ", totalPrice=" + totalPrice + ", dateReturn=" + dateReturn + ", bookingDtls=" + bookingDtls
 				+ ", climbingSchedule=" + climbingSchedule + "]";
 	}
 

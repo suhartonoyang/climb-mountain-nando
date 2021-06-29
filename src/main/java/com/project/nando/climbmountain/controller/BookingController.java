@@ -68,7 +68,7 @@ public class BookingController {
 	@PostMapping("/")
 	@ApiOperation(value = "create one record of booking")
 	public ResponseEntity<Response> saveBooking(
-			@ApiParam(value = "In bookingHdr, please clear attributes of id and bookingNumber. "
+			@ApiParam(value = "In bookingHdr, please clear attributes of id, bookingNumber, and invoiceNumber. "
 					+ "In climbingSchedule, please just fill id attribute. "
 					+ "In bookingDtls, please clear id attribute. "
 					+ "In climber, please clear id attribute and bookingDtls. "
