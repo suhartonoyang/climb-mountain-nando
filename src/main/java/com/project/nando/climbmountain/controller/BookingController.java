@@ -1,11 +1,14 @@
 package com.project.nando.climbmountain.controller;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +27,7 @@ import com.project.nando.climbmountain.model.ClimbingSchedule;
 import com.project.nando.climbmountain.service.BookingService;
 import com.project.nando.climbmountain.service.ClimberService;
 import com.project.nando.climbmountain.service.ClimbingScheduleService;
+import com.project.nando.climbmountain.service.ExportPdfService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -35,6 +39,12 @@ public class BookingController {
 
 	@Autowired
 	private BookingService bookingService;
+
+	@Autowired
+	private ExportPdfService exportPdfService;
+
+	@Value("${file.tempDir}")
+	private String BASE_DIR;
 
 	@GetMapping("/")
 	public ResponseEntity<Response> getBookingAll() {
@@ -64,6 +74,26 @@ public class BookingController {
 		}
 	}
 
+	@GetMapping("/{bookingNumber}/pdf")
+	public ResponseEntity<Response> exportPdfByBookingNumber(@PathVariable String bookingNumber) {
+		Response resp = new Response();
+
+		BookingHdr booking = bookingService.getBookingByBookingNumber(bookingNumber);
+		if (booking == null) {
+			resp.setCode(String.valueOf(HttpStatus.NOT_FOUND.value()));
+			resp.setMessage("Data not found!");
+			resp.setData(null);
+			return ResponseEntity.ok(resp);
+		} else {
+			String path = exportPdfService.writeToPDF(BASE_DIR, booking);
+			Path file = Paths.get(path);
+			resp.setCode(String.valueOf(HttpStatus.OK.value()));
+			resp.setMessage(HttpStatus.OK.name());
+			resp.setData(Arrays.asList(file));
+			return ResponseEntity.ok(resp);
+		}
+	}
+
 	@Transactional
 	@PostMapping("/")
 	@ApiOperation(value = "create one record of booking")
@@ -72,7 +102,7 @@ public class BookingController {
 					+ "In climbingSchedule, please just fill id attribute. "
 					+ "In bookingDtls, please clear id attribute. "
 					+ "In climber, please clear id attribute and bookingDtls. "
-					+ "In climberDiseases, please clear id attribute" ) @RequestBody BookingHdr booking) {
+					+ "In climberDiseases, please clear id attribute") @RequestBody BookingHdr booking) {
 
 		BookingHdr newBooking = bookingService.saveBooking(booking);
 		Response resp = new Response();

@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -223,6 +225,28 @@ public class Climber implements Serializable {
 
 	public void setLeader(boolean isLeader) {
 		this.isLeader = isLeader;
+	}
+
+	@Transient
+	private int totalDiseases;
+
+	@Transient
+	private String diseases;
+
+	public int getTotalDiseases() {
+		return this.getClimberDiseases().size();
+	}
+
+	public String getDiseases() {
+
+		String diseases = null;
+		if (this.getClimberDiseases().size() > 0) {
+			diseases = this.getClimberDiseases().stream().map(p -> p.getDiseaseName())
+					.collect(Collectors.joining(", "));
+		}
+
+		return diseases;
+
 	}
 
 	@Override

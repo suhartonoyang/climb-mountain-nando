@@ -29,11 +29,16 @@ public class ClimberService {
 
 	@Transactional
 	public Climber saveClimber(Climber climber) {
+		System.out.println("climber: " + climber.getName());
 		Climber newClimber = climberRepository.save(climber);
-		climber.getClimberDiseases().stream().forEach(p -> {
-			p.setClimber(newClimber);
-			p = climberDiseaseRepository.save(p);
-		});
+
+		if (climber.getClimberDiseases() != null) {
+			climber.getClimberDiseases().stream().forEach(p -> {
+				p.setClimber(newClimber);
+				p = climberDiseaseRepository.save(p);
+			});
+		}
+
 		return climber;
 	}
 }
