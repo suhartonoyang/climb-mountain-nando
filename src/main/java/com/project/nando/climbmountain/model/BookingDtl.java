@@ -23,6 +23,8 @@ public class BookingDtl implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false, precision = 10)
 	private int id;
+	@Column(name = "is_need_tour_guide", length = 1)
+	private boolean isNeedTourGuide;
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "climber_id", nullable = false)
 	@JsonIgnoreProperties(value = "bookingDtls")
@@ -53,6 +55,14 @@ public class BookingDtl implements Serializable {
 	 */
 	public void setId(int aId) {
 		id = aId;
+	}
+
+	public boolean isNeedTourGuide() {
+		return isNeedTourGuide;
+	}
+
+	public void setNeedTourGuide(boolean isNeedTourGuide) {
+		this.isNeedTourGuide = isNeedTourGuide;
 	}
 
 	/**
@@ -141,7 +151,8 @@ public class BookingDtl implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BookingDtl [id=" + id + ", climber=" + climber + ", bookingHdr=" + bookingHdr + "]";
+		return "BookingDtl [id=" + id + ", isNeedTourGuide=" + isNeedTourGuide + ", climber=" + climber
+				+ ", bookingHdr=" + bookingHdr + "]";
 	}
 
 }

@@ -142,6 +142,15 @@ public class ExportPdfService {
 		});
 
 		document.add(table);
+
+		subTitleFont.setStyle(Font.BOLDITALIC);
+		Paragraph rekomendasi = new Paragraph();
+		rekomendasi.setAlignment(Paragraph.ALIGN_CENTER);
+		rekomendasi.add(
+				new Phrase("(Rekomendasi: " + (booking.isNeedTourGuide() ? "Butuh" : "Tidak Butuh") + " Tour Guide)",
+						subTitleFont));
+		document.add(rekomendasi);
+
 	}
 
 	private void addHeaderClimberSection(PdfPTable table, Font font) {
@@ -195,6 +204,19 @@ public class ExportPdfService {
 
 	}
 
+	private void addHeaderClimberSectionCont(PdfPTable table, Font font) {
+
+		String[] headers = { "No Telp", "No Telp Kel", "Punya ltr blkg penyakit (Y/T)", "Nama Penyakit",
+				"Pernah Melakukan Pendakian (Y/T)", "Jumlah Pendakian" };
+
+		Stream.of(headers).forEach(p -> {
+			PdfPCell header = new PdfPCell();
+			header.setPhrase(new Phrase(p, font));
+			table.addCell(header);
+		});
+
+	}
+
 	private void addClimberSectionCont(Document document, BookingHdr booking) throws DocumentException {
 		Font climberDiseaseSectionFont = setFont(10, 0);
 		Paragraph emptyPr = new Paragraph();
@@ -211,13 +233,13 @@ public class ExportPdfService {
 		for (BookingDtl dtl : booking.getBookingDtls()) {
 			table.addCell(new Phrase(dtl.getClimber().getPhoneNumber(), climberDiseaseSectionFont));
 			table.addCell(new Phrase(dtl.getClimber().getFamilyPhoneNumber(), climberDiseaseSectionFont));
-			String hasDisease = (dtl.getClimber().getTotalDiseases() == 0 ? "N" : "Y");
+			String hasDisease = dtl.getClimber().getIsHasDisease() ? "Y" : "T";
 			table.addCell(new Phrase(hasDisease, climberDiseaseSectionFont));
 
 			String diseases = (dtl.getClimber().getDiseases() == null ? "-" : dtl.getClimber().getDiseases());
 			table.addCell(new Phrase(diseases, climberDiseaseSectionFont));
 
-			String hasEverClimb = (dtl.getClimber().isHasEverClimb() ? "Y" : "N");
+			String hasEverClimb = (dtl.getClimber().isHasEverClimb() ? "Y" : "T");
 			table.addCell(new Phrase(hasEverClimb, climberDiseaseSectionFont));
 
 			String numberOfClimbs = (dtl.getClimber().getNumberOfClimbs() == 0 ? "-"
@@ -227,19 +249,6 @@ public class ExportPdfService {
 		}
 
 		document.add(table);
-
-	}
-
-	private void addHeaderClimberSectionCont(PdfPTable table, Font font) {
-
-		String[] headers = { "No Telp", "No Telp Kel", "Punya ltr blkg penyakit (Y/T)", "Nama Penyakit",
-				"Pernah Melakukan Pendakian (Y/T)", "Jumlah Pendakian" };
-
-		Stream.of(headers).forEach(p -> {
-			PdfPCell header = new PdfPCell();
-			header.setPhrase(new Phrase(p, font));
-			table.addCell(header);
-		});
 
 	}
 
@@ -396,6 +405,8 @@ public class ExportPdfService {
 		document.add(signature);
 
 		String[] listSignatures = { "PETUGAS CEK NAIK", "PETUGAS CEK TURUN", "KETUA ROMBONGAN" };
+		String[] listSignatures2 = { "(                                      )",
+				"(                                         )", "(                                        )" };
 
 		PdfPTable table = new PdfPTable(3);
 
@@ -405,10 +416,22 @@ public class ExportPdfService {
 			cell.setPhrase(new Phrase(p, signatureFontBold10));
 			table.addCell(cell);
 		});
+		
+		for (int i = 0; i < 9; i++) {
+			PdfPCell cell = new PdfPCell();
+			cell.setBorder(0);
+			cell.setPhrase(new Phrase(" "));
+			table.addCell(cell);
+		}
+		
+		Stream.of(listSignatures2).forEach(p -> {
+			PdfPCell cell = new PdfPCell();
+			cell.setBorder(0);
+			cell.setPhrase(new Phrase(p, signatureFontBold10));
+			table.addCell(cell);
+		});
 
 		document.add(table);
-
-		addEmptyLine(signature, 2, 12f);
 	}
 
 	private Font setFont(int fontSize, int boldSize) {

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.datetime.DateFormatter;
@@ -44,6 +46,7 @@ public class BookingService {
 		return bookingRepository.findByBookingNumber(bookingNumber);
 	}
 
+	@Transactional
 	public BookingHdr saveBooking(BookingHdr booking) {
 		booking.setClimbingSchedule(
 				climbingScheduleService.getClimbingScheduleById(booking.getClimbingSchedule().getId()));
@@ -57,6 +60,16 @@ public class BookingService {
 		});
 		;
 		return booking;
+	}
+
+	@Transactional
+	public BookingHdr updateBooking(BookingHdr booking) {
+		return bookingRepository.save(booking);
+	}
+
+	@Transactional
+	public BookingDtl updateBookingDtl(BookingDtl dtl) {
+		return bookingDtlRepository.save(dtl);
 	}
 
 	private String generateBookingNumber(BookingHdr booking) {
@@ -73,4 +86,5 @@ public class BookingService {
 				+ StringUtils.leftPad(String.valueOf(booking.getId()), 5, "0");
 		return invoiceNumber;
 	}
+
 }

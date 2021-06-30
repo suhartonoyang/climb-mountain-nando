@@ -31,6 +31,8 @@ public class BookingHdr implements Serializable {
 	private long totalPrice;
 	@Column(name = "date_return", nullable = false)
 	private LocalDate dateReturn;
+	@Column(name = "is_need_tour_guide", length = 1)
+	private boolean isNeedTourGuide;
 	@OneToMany(mappedBy = "bookingHdr")
 	@JsonIgnoreProperties(value = "bookingHdr")
 	private List<BookingDtl> bookingDtls;
@@ -102,6 +104,14 @@ public class BookingHdr implements Serializable {
 	 */
 	public void setDateReturn(LocalDate aDateReturn) {
 		dateReturn = aDateReturn;
+	}
+
+	public boolean isNeedTourGuide() {
+		return isNeedTourGuide;
+	}
+
+	public void setNeedTourGuide(boolean isNeedTourGuide) {
+		this.isNeedTourGuide = isNeedTourGuide;
 	}
 
 	/**
@@ -191,8 +201,8 @@ public class BookingHdr implements Serializable {
 	@Override
 	public String toString() {
 		return "BookingHdr [id=" + id + ", bookingNumber=" + bookingNumber + ", invoiceNumber=" + invoiceNumber
-				+ ", totalPrice=" + totalPrice + ", dateReturn=" + dateReturn + ", bookingDtls=" + bookingDtls
-				+ ", climbingSchedule=" + climbingSchedule + "]";
+				+ ", totalPrice=" + totalPrice + ", dateReturn=" + dateReturn + ", isNeedTourGuide=" + isNeedTourGuide
+				+ ", bookingDtls=" + bookingDtls + ", climbingSchedule=" + climbingSchedule + "]";
 	}
 
 }

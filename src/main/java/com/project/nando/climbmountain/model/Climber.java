@@ -233,6 +233,9 @@ public class Climber implements Serializable {
 	@Transient
 	private String diseases;
 
+	@Transient
+	private boolean isHasDisease;
+
 	public int getTotalDiseases() {
 		return this.getClimberDiseases().size();
 	}
@@ -247,6 +250,10 @@ public class Climber implements Serializable {
 
 		return diseases;
 
+	}
+
+	public boolean getIsHasDisease() {
+		return this.getTotalDiseases() > 0;
 	}
 
 	@Override
