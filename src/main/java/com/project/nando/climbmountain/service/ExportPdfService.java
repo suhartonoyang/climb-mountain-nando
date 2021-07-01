@@ -336,7 +336,8 @@ public class ExportPdfService {
 
 		insideData = new HashMap<String, String>();
 		long price = totalClimbers * 25000;
-		insideData.put("Jumlah Orang x Rp. 25.000,-", "Rp. " + formatCurrency(price) + ",-");
+		insideData.put("Jumlah Orang (" + totalClimbers + ")" + " x Rp. 25.000,-",
+				"Rp. " + formatCurrency(price) + ",-");
 		data.put(5, insideData);
 
 		data.entrySet().stream().forEach(p -> {
@@ -416,14 +417,14 @@ public class ExportPdfService {
 			cell.setPhrase(new Phrase(p, signatureFontBold10));
 			table.addCell(cell);
 		});
-		
+
 		for (int i = 0; i < 9; i++) {
 			PdfPCell cell = new PdfPCell();
 			cell.setBorder(0);
 			cell.setPhrase(new Phrase(" "));
 			table.addCell(cell);
 		}
-		
+
 		Stream.of(listSignatures2).forEach(p -> {
 			PdfPCell cell = new PdfPCell();
 			cell.setBorder(0);
