@@ -304,11 +304,11 @@ public class ExportPdfService {
 		addEmptyLine(emptyPr, 1, 12f);
 		document.add(emptyPr);
 
-		float[] columnWidths = { 16, 1, 10 };
+		float[] columnWidths = { 20, 1, 10 };
 
 		PdfPTable table = new PdfPTable(columnWidths);
 		table.setHorizontalAlignment(table.ALIGN_LEFT);
-		table.setWidthPercentage(40);
+		table.setWidthPercentage(50);
 
 		Font headerFont = setFont(10, 1);
 		PdfPCell cellSpan = new PdfPCell(new Phrase("INFO HARGA: ", headerFont));
